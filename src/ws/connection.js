@@ -24,6 +24,16 @@ class Connection {
     send(object) {
         this.entity.send(JSON.stringify(object))
     }
+
+    toJSON() {
+        return {
+            uuid: this.uuid,
+            name: this.name,
+            ua: this.ua,
+            beezigforge: this.beezigforge,
+            connectedAt: this.connectedSince
+        }
+    }
 }
 
 module.exports = Connection

@@ -23,7 +23,7 @@ const Connection = require('./connection.js')
 let connectionsPool = []
 let messagesRegistry = {}
 
-const interval = setInterval(() => {
+setInterval(() => {
     connectionsPool.forEach((conn) => {
         let ws = conn.entity
         if (ws.isAlive === false) return ws.terminate()
@@ -65,7 +65,7 @@ function connect(expressServer) {
                     })
                 }
 
-                messagesRegistry[message.opcode].call(message.data, ourEntity)
+                messagesRegistry[message.opcode].call(message, ourEntity)
             } catch (error) {
                 ourEntity.send({
                     opcode: 0x0,
@@ -90,6 +90,8 @@ function registerMessage(name) {
 
 function register() {
     registerMessage('online_users')
+    registerMessage('identification')
+    registerMessage('beezig_forge')
 }
 
 module.exports = {

@@ -27,7 +27,7 @@ class OnlineUsers extends Message {
     }
 
     opcode() {
-        return 0x1
+        return 0x2
     }
 }
 

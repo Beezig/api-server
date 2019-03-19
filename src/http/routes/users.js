@@ -15,13 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-const Express = require('express')
-const app = Express()
+function online(req, res) {
+    res.status(200).json(require('../../ws/server.js').pool)
+}
 
-const ws = require('./ws/server.js')
+function data(req, res) {
 
-/* Set up routes */
-require('./http/route.js')(app)
+}
 
-ws.register()
-ws.connect(app)
+function dataSpecific(req, res) {
+
+}
+
+module.exports = {
+    online: online,
+    data: data,
+    dataSpecific: dataSpecific
+}

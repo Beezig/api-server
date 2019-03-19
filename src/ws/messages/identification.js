@@ -15,13 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-const Express = require('express')
-const app = Express()
+const Message = require('../message.js')
 
-const ws = require('./ws/server.js')
+class Identification extends Message {
+    call(data, connection) {
+        connection.uuid = data.uuid
+        connection.name = data.name
+        connection.agent = data.ua
+        connection.connectedSince = new Date().getTime()
+    }
 
-/* Set up routes */
-require('./http/route.js')(app)
+    opcode() {
+        return 0x1
+    }
+}
 
-ws.register()
-ws.connect(app)
+module.exports = Identification

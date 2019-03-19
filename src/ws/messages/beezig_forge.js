@@ -15,13 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-const Express = require('express')
-const app = Express()
+const Message = require('../message.js')
 
-const ws = require('./ws/server.js')
+class BeezigForgeLoad extends Message {
+    call(data, connection) {
+        connection.beezigforge = true
+    }
 
-/* Set up routes */
-require('./http/route.js')(app)
+    opcode() {
+        return 0x3
+    }
+}
 
-ws.register()
-ws.connect(app)
+module.exports = BeezigForgeLoad
