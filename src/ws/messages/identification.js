@@ -16,13 +16,17 @@
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
 const Message = require('../message.js')
+const putIntoFirebase = require('../../utils/firebase.js').put
 
 class Identification extends Message {
     call(data, connection) {
         connection.uuid = data.uuid
         connection.name = data.name
         connection.agent = data.ua
+        connection.platform = data.platform
         connection.connectedSince = new Date().getTime()
+
+        putIntoFirebase(data.uuid, data.platform)
     }
 
     opcode() {

@@ -15,16 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
+const firebase = require('../../utils/firebase.js')
+
 function online(req, res) {
     res.status(200).json(require('../../ws/server.js').pool)
 }
 
 function data(req, res) {
-
+    firebase.unique(res)
 }
 
 function dataSpecific(req, res) {
-
+    firebase.profile(req.params.uuid, res)
 }
 
 module.exports = {
