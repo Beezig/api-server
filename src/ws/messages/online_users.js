@@ -15,10 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-const Express = require('express')
-const app = Express()
+const Message = require('../message.js')
+const onlineUsers = require('../server.js').pool
 
-const ws = require('./ws/server.js')
+class OnlineUsers extends Message {
+    call(data, connection) {
+        connection.send({
+            opcode: this.opcode(),
+            data: onlineUsers.length
+        })
+    }
 
-ws.register()
-ws.connect(app)
+    opcode() {
+        return 0x1
+    }
+}
+
+module.exports = OnlineUsers

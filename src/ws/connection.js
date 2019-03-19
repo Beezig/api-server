@@ -15,10 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-const Express = require('express')
-const app = Express()
+class Connection {
+    constructor (uuid, entity) {
+        this.uuid = uuid
+        this.entity = entity
+    }
 
-const ws = require('./ws/server.js')
+    send(object) {
+        this.entity.send(JSON.stringify(object))
+    }
+}
 
-ws.register()
-ws.connect(app)
+module.exports = Connection

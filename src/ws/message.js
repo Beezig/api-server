@@ -15,10 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-const Express = require('express')
-const app = Express()
+class Message {
+    call(data, connection) {
+        console.error('Stub!')
+    }
 
-const ws = require('./ws/server.js')
+    get opcode() {
+        console.error('Stub! (No OPCode)')
+    }
+}
 
-ws.register()
-ws.connect(app)
+module.exports = Message
