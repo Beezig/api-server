@@ -15,23 +15,40 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-const Message = require('../message.js')
-const putIntoFirebase = require('../../utils/firebase.js').put
+const adminToken = process.env.ADMIN_TOKEN
+const server = require('../../ws/server.js')
 
-class Identification extends Message {
-    call(data, connection) {
-        connection.uuid = data.uuid
-        connection.name = data.name
-        connection.agent = data.ua
-        connection.platform = data.platform
-        connection.connectedSince = new Date().getTime()
-
-        putIntoFirebase(data.uuid, data.platform)
-    }
-
-    opcode() {
-        return 0x001
-    }
+function checkToken(req, res, next) {
+    if ((!req.body && !req.query.token) ||
+        (req.body.token || req.query.token) !== adminToken) {
+        res.status(403).json({
+            code: 403,
+            message: 'Invalid token.'
+        })
+    } else next()
 }
 
-module.exports = Identification
+function forceRefetch(req, res) {
+    res.sendStatus(200)
+    server.broadcast({
+        opcode: 0xC02,
+        data: {}
+    })
+}
+
+function announce(req, res) {
+    res.sendStatus(200)
+    server.broadcast({
+        opcode: 0xC03,
+        data: {
+            title: req.body.title,
+            content: req.body.content
+        }
+    })
+}
+
+module.exports = {
+    check: checkToken,
+    refetch: forceRefetch,
+    announce: announce
+}

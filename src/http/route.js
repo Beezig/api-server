@@ -24,4 +24,11 @@ module.exports = (app) => {
     app.get('/bestgame/:uuid', require('./routes/bestgame.js'))
 
     app.get('/maprecords/:uuid', require('./routes/speedrun.js'))
+
+    /* Admin routes */
+    let admin = require('./routes/admin.js')
+    let auth = admin.check
+
+    app.post('/admin/refetch', [auth], admin.refetch)
+    app.post('/admin/announce', [auth], admin.announce)
 }

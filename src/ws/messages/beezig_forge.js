@@ -23,7 +23,7 @@ class BeezigForgeLoad extends Message {
     }
 
     opcode() {
-        return 0x3
+        return 0x003
     }
 }
 

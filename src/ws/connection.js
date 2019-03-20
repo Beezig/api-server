@@ -22,7 +22,9 @@ class Connection {
     }
 
     send(object) {
-        this.entity.send(JSON.stringify(object))
+        if (this.entity.readyState === 1) {
+            this.entity.send(JSON.stringify(object))
+        }
     }
 
     toJSON() {

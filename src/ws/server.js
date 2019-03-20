@@ -60,7 +60,7 @@ function connect(expressServer) {
                 /* Return an error if the opcode is invalid */
                 if (!messagesRegistry[message.opcode]) {
                     ourEntity.send({
-                        opcode: 0x0,
+                        opcode: 0xC00,
                         data: 'Invalid message code.'
                     })
                 }
@@ -68,7 +68,7 @@ function connect(expressServer) {
                 messagesRegistry[message.opcode].call(message, ourEntity)
             } catch (error) {
                 ourEntity.send({
-                    opcode: 0x0,
+                    opcode: 0xC00,
                     data: 'Invalid JSON message.'
                 })
             }
@@ -94,9 +94,16 @@ function register() {
     registerMessage('beezig_forge')
 }
 
+function broadcast(msg) {
+    connectionsPool.forEach(conn => {
+        conn.send(msg)
+    })
+}
+
 module.exports = {
     connect: connect,
     pool: connectionsPool,
     messages: messagesRegistry,
-    register: register
+    register: register,
+    broadcast: broadcast
 }

@@ -21,13 +21,13 @@ const onlineUsers = require('../server.js').pool
 class OnlineUsers extends Message {
     call(data, connection) {
         connection.send({
-            opcode: this.opcode(),
+            opcode: 0xC01,
             data: onlineUsers.length
         })
     }
 
     opcode() {
-        return 0x2
+        return 0x002
     }
 }
 

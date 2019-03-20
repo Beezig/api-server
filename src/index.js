@@ -20,6 +20,9 @@ const app = Express()
 
 const ws = require('./ws/server.js')
 
+/* Set up CORS */
+app.use(require('cors')())
+
 /* Set up routes */
 require('./http/route.js')(app)
 
