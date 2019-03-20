@@ -20,4 +20,8 @@ module.exports = (app) => {
     app.get('/users/online', users.online)
     app.get('/users/data', users.data)
     app.get('/users/data/:uuid', users.dataSpecific)
+
+    app.get('/bestgame/:uuid', require('./routes/bestgame.js'))
+
+    app.get('/maprecords/:uuid', require('./routes/speedrun.js'))
 }

@@ -33,7 +33,9 @@
     "discord.js": "^11.4.2",
     "express": "^4.16.4",
     "firebase-admin": "^7.1.0",
+    "hive-api": "^1.11.1",
     "request": "^2.88.0",
+    "speedrunapi": "^1.0.1",
     "ws": "^6.2.0"
   }
 }
