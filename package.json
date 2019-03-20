@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "atob": "^2.1.2",
+    "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "discord.js": "^11.4.2",
     "express": "^4.16.4",

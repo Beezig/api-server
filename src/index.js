@@ -23,6 +23,11 @@ const ws = require('./ws/server.js')
 /* Set up CORS */
 app.use(require('cors')())
 
+/* We use body-parser to accept JSON input in POST requests */
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+
 /* Set up routes */
 require('./http/route.js')(app)
 
