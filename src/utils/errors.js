@@ -15,24 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-module.exports = (app) => {
-    let users = require('./routes/users.js')
-    app.get('/users/online', users.online)
-    app.get('/users/data', users.data)
-    app.get('/users/data/:uuid', users.dataSpecific)
+const colors = require('./colors.js')
 
-    app.get('/bestgame/:uuid', require('./routes/bestgame.js'))
+const Discord = require('discord.js')
+const hook = new Discord.WebhookClient(process.env.ERROR_HOOK_ID, process.env.ERROR_HOOK_KEY)
 
-    app.get('/maprecords/:uuid', require('./routes/speedrun.js'))
+module.exports = err => {
+    let embed = {
+        color: colors.ERROR,
+        title: '[API Server] Uncaught exception thrown',
+        description: err.stack.substring(0, 1999)
+    }
 
-    /* Admin routes */
-    let admin = require('./routes/admin.js')
-    let auth = admin.check
-
-    app.post('/admin/refetch', [auth], admin.refetch)
-    app.post('/admin/announce', [auth], admin.announce)
-
-    app.post('/report', require('./routes/report.js'))
-
-    app.get('/discord/check/:id', require('./routes/discord.js'))
+    hook.send('', { embeds: [embed] })
 }

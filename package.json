@@ -33,6 +33,7 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "discord.js": "^11.4.2",
+    "eris": "^0.9.0",
     "express": "^4.16.4",
     "firebase-admin": "^7.1.0",
     "hive-api": "^1.11.1",

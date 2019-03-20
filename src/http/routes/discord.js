@@ -15,24 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-module.exports = (app) => {
-    let users = require('./routes/users.js')
-    app.get('/users/online', users.online)
-    app.get('/users/data', users.data)
-    app.get('/users/data/:uuid', users.dataSpecific)
+/* Eris is our Discord framework */
+const Eris = require('eris')
 
-    app.get('/bestgame/:uuid', require('./routes/bestgame.js'))
+/* Retrieve the token from environment */
+const token = process.env.BOT_TOKEN
 
-    app.get('/maprecords/:uuid', require('./routes/speedrun.js'))
+/* Init bot */
+const bot = new Eris(token)
+bot.on('error', require('../../utils/errors.js'))
+bot.connect()
 
-    /* Admin routes */
-    let admin = require('./routes/admin.js')
-    let auth = admin.check
+/* Our route function */
+module.exports = (req, res) => {
+    let matchId = req.params.id
 
-    app.post('/admin/refetch', [auth], admin.refetch)
-    app.post('/admin/announce', [auth], admin.announce)
+    let guildId = process.env.BOT_GUILD_ID
+    let guild = bot.guilds.get(guildId)
 
-    app.post('/report', require('./routes/report.js'))
+    let members = guild.members
 
-    app.get('/discord/check/:id', require('./routes/discord.js'))
+    let memberFound = members.find(m => m.id === matchId)
+
+    res.sendStatus(memberFound ? 302 : 404)
 }

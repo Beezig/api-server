@@ -15,24 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with "Beezig API Server".  If not, see <http://www.gnu.org/licenses/>.
 
-module.exports = (app) => {
-    let users = require('./routes/users.js')
-    app.get('/users/online', users.online)
-    app.get('/users/data', users.data)
-    app.get('/users/data/:uuid', users.dataSpecific)
-
-    app.get('/bestgame/:uuid', require('./routes/bestgame.js'))
-
-    app.get('/maprecords/:uuid', require('./routes/speedrun.js'))
-
-    /* Admin routes */
-    let admin = require('./routes/admin.js')
-    let auth = admin.check
-
-    app.post('/admin/refetch', [auth], admin.refetch)
-    app.post('/admin/announce', [auth], admin.announce)
-
-    app.post('/report', require('./routes/report.js'))
-
-    app.get('/discord/check/:id', require('./routes/discord.js'))
+module.exports = {
+    ERROR: 0xFF0000,
+    REPORT_NEW: 0x53f442
 }
