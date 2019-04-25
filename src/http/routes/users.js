@@ -16,7 +16,8 @@
 const firebase = require('../../utils/firebase.js')
 
 function online(req, res) {
-    res.status(200).json(require('../../ws/server.js').pool)
+    let pool = require('../../ws/server.js').pool
+    res.status(200).json(pool)
 }
 
 function data(req, res) {

@@ -18,20 +18,20 @@ const HttpServer = require('http')
 
 const Connection = require('./connection.js')
 
-let connectionsPool = []
+var connectionsPool = []
 let messagesRegistry = {}
 
-setInterval(() => {
-    connectionsPool.forEach((conn) => {
-        let ws = conn.entity
-        if (ws.isAlive === false) return ws.terminate()
-
-        ws.alive = false
-        ws.ping(() => { })
-    })
-}, 30000)
-
 function connect(expressServer) {
+    setInterval(() => {
+        connectionsPool.forEach((conn) => {
+            let ws = conn.entity
+            if (ws.isAlive === false) return ws.terminate()
+
+            ws.alive = false
+            ws.ping(() => { })
+        })
+    }, 30000)
+
     let httpServer = HttpServer.createServer(expressServer)
 
     let webSocketServer = new WebSocketServer({
@@ -49,6 +49,7 @@ function connect(expressServer) {
 
         connection.on('close', (code, reason) => {
             connectionsPool = connectionsPool.filter(item => item !== ourEntity)
+            this.pool = connectionsPool
         })
 
         connection.on('message', (data) => {
