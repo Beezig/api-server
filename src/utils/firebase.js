@@ -62,8 +62,30 @@ function getUserProfile(uuid, res) {
     })
 }
 
+function checkBanned(uuid, callback) {
+    let ref = db.ref(`report_ban/${uuid}`)
+    ref.once('value', (snapshot) => {
+        if (snapshot.exists()) {
+            let json = snapshot.val()
+            if (json.d === -1) {
+                callback(new Error('Banned permanently from sending reports.'))
+                return
+            }
+            let now = new Date().getTime()
+            if (now >= json.s + json.d) {
+                ref.remove()
+                callback()
+            } else {
+                let expiry = new Date(json.s + json.d)
+                callback(new Error(`Banned from sending reports. Your ban will expire on ${expiry.toISOString()}`))
+            }
+        } else callback()
+    })
+}
+
 module.exports = {
     put: putIfAbsent,
     unique: getUniqueCount,
-    profile: getUserProfile
+    profile: getUserProfile,
+    banned: checkBanned
 }

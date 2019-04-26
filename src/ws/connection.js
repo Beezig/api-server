@@ -29,7 +29,7 @@ class Connection {
         return {
             uuid: this.uuid,
             name: this.name,
-            ua: this.ua,
+            ua: this.agent,
             beezigforge: this.beezigforge,
             connectedAt: this.connectedSince
         }

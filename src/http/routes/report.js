@@ -15,11 +15,11 @@
 
 const Discord = require('discord.js')
 const ws = require('../../ws/server.js')
+const firebase = require('../../utils/firebase.js')
 
 const hookId = process.env.REPORTS_HOOK_ID
 const hookKey = process.env.REPORTS_HOOK_KEY
 const modRole = process.env.REPORTS_MOD_ROLE
-
 const hook = new Discord.WebhookClient(hookId, hookKey)
 
 module.exports = (req, res) => {
@@ -30,54 +30,72 @@ module.exports = (req, res) => {
     }
 
     let sender = req.body.sender
-    let reason = req.body.reason
-    let target = req.body.destination
+    let connection = ws.pool.find(item => item.name === sender)
 
-    /* Instantly release connection to the client */
-    res.sendStatus(200)
-
-    let targets = ''
-    target.split(',').forEach(player => {
-        targets += `\`${player}\`, `
-    })
-    targets = targets.trim()
-
-    let fieldTargets = {
-        name: 'Reported Player(s)',
-        value: targets.substring(0, targets.length - 1),
-        inline: false
+    if (!connection || !connection.uuid) {
+        res.sendStatus(401)
+        return
     }
 
-    reason = reason.replace(/,/g, ', ')
+    firebase.banned(connection.uuid, (err) => {
+        if (err) {
+            connection.send({
+                opcode: 0xC00,
+                message: err.message
+            })
 
-    let fieldReason = {
-        name: 'Reason',
-        value: reason,
-        inline: false
-    }
-
-    let fields = [fieldTargets, fieldReason]
-
-    let embed = {
-        fields: fields,
-        color: require('../../utils/colors.js').REPORT_NEW,
-        footer: {
-            text: 'Powered by Beezig',
-            icon_url: 'https://cdn.discordapp.com/icons/346695724253184014/b6c64a02092ce9090b5530092da3014d.png'
+            return
         }
-    }
 
-    let message = `\`${sender}\` is looking for a <@&${modRole}>`
+        let reason = req.body.reason
+        let target = req.body.destination
 
-    hook.send(message, {
-        embeds: [embed]
-    }).catch(require('../../utils/errors.js'))
+        /* Instantly release connection to the client */
+        res.sendStatus(200)
 
-    ws.broadcast({
-        opcode: 0xC04,
-        data: {
-            target: fieldTargets.value.replace(/`/g, ''),
-            reason: reason
+        let targets = ''
+        target.split(',').forEach(player => {
+            targets += `\`${player}\`, `
+        })
+        targets = targets.trim()
+
+        let fieldTargets = {
+            name: 'Reported Player(s)',
+            value: targets.substring(0, targets.length - 1),
+            inline: false
         }
+
+        reason = reason.replace(/,/g, ', ')
+
+        let fieldReason = {
+            name: 'Reason',
+            value: reason,
+            inline: false
+        }
+
+        let fields = [fieldTargets, fieldReason]
+
+        let embed = {
+            fields: fields,
+            color: require('../../utils/colors.js').REPORT_NEW,
+            footer: {
+                text: 'Powered by Beezig',
+                icon_url: 'https://cdn.discordapp.com/icons/346695724253184014/b6c64a02092ce9090b5530092da3014d.png'
+            }
+        }
+
+        let message = `\`${sender}\` is looking for a <@&${modRole}>`
+
+        hook.send(message, {
+            embeds: [embed]
+        }).catch(require('../../utils/errors.js'))
+
+        ws.broadcast({
+            opcode: 0xC04,
+            data: {
+                target: fieldTargets.value.replace(/`/g, ''),
+                reason: reason
+            }
+        })
     })
 }
