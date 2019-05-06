@@ -91,6 +91,7 @@ function register() {
     registerMessage('online_users')
     registerMessage('identification')
     registerMessage('beezig_forge')
+    registerMessage('claim_report')
 }
 
 function broadcast(msg) {

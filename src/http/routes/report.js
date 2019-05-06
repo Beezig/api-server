@@ -93,6 +93,7 @@ module.exports = (req, res) => {
         ws.broadcast({
             opcode: 0xC04,
             data: {
+                sender: sender,
                 target: fieldTargets.value.replace(/`/g, ''),
                 reason: reason
             }
